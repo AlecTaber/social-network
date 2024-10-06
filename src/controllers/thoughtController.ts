@@ -1,18 +1,17 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import  Thought from '../models/Thought';
 
-const router = Router();
 
-router.get('/', async (req: Request, res: Response) => {
+export const getThoughts = async (req: Request, res: Response) => {
     try {
         const thoughts = await Thought.find();
         res.json(thoughts);
     } catch (err) {
         res.status(400).json(err);
     }
-    });
+    };
 
-    router.get('/:id', async (req: Request, res: Response) => {
+    export const getThoughtById = async (req: Request, res: Response) => {
         try {
             const thought = await Thought.findById(req.params.id);
             if (!thought) {
@@ -23,18 +22,18 @@ router.get('/', async (req: Request, res: Response) => {
         } catch (err) {
             res.status(400).json(err);
         }
-    });
+    };
 
-    router.post('/', async (req: Request, res: Response) => {
+    export const createThought = async (req: Request, res: Response) => {
         try {
             const thought = await Thought.create(req.body);
             res.json(thought);
         } catch (err) {
             res.status(400).json(err);
         }
-    });
+    };
 
-    router.put('/:id', async (req: Request, res: Response) => {
+    export const updateThought = async (req: Request, res: Response) => {
         try {
             const thought = await Thought.findByIdAndUpdate(req.params.id, req.body, { new: true });
             if (!thought) {
@@ -45,9 +44,9 @@ router.get('/', async (req: Request, res: Response) => {
         } catch (err) {
             res.status(400).json(err);
         }
-    });
+    };
 
-    router.delete('/:id', async (req: Request, res: Response) => {
+    export const deleteThought = async (req: Request, res: Response) => {
         try {
             const thought = await Thought.findByIdAndDelete(req.params.id);
             if (!thought) {
@@ -58,6 +57,4 @@ router.get('/', async (req: Request, res: Response) => {
         } catch (err) {
             res.status(400).json(err);
         }
-    });
-
-export default router;
+    };
