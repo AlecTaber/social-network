@@ -11,7 +11,7 @@ export const cleandb = async () => {
         console.log('Database cleared!');
     } catch (err) {
         console.error(err);
-     throw new Error('Failed to clear database!');
+        throw new Error('Failed to clear database!');
     }
 };
 

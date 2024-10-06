@@ -1,11 +1,12 @@
 import { Schema, model, type Document } from 'mongoose';
 
-interface IUser extends Document {
-  username: string;
-  email: string;
-  thoughts: Schema.Types.ObjectId[];
-  friends: Schema.Types.ObjectId[];
-  friendCount: number;
+export interface IUser extends Document {
+    _id: Schema.Types.ObjectId;
+    username: string;
+    email: string;
+    thoughts: Schema.Types.ObjectId[];
+    friends: Schema.Types.ObjectId[];
+    friendCount: number;
 }
 
 const userSchema = new Schema<IUser>(
@@ -26,6 +27,12 @@ const userSchema = new Schema<IUser>(
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Thought',
+            },
+        ],
+        friends: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
             },
         ],
     },

@@ -7,7 +7,8 @@ interface IReaction {
     createdAt: Date;
 }
 
-interface IThought extends Document {
+export interface IThought extends Document {
+    _id: Schema.Types.ObjectId;
     thoughtText: string;
     createdAt: Date;
     username: string;
