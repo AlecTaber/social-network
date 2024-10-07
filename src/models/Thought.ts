@@ -1,7 +1,7 @@
-import { Schema, model, type Document } from 'mongoose';
+import { Schema, model, type Document, Types } from 'mongoose';
 
 interface IReaction {
-    reactionId: Schema.Types.ObjectId;
+    reactionId: Types.ObjectId;
     reactionBody: string;
     username: string;
     createdAt: Date;
@@ -20,7 +20,7 @@ const reactionSchema = new Schema<IReaction>(
     {
         reactionId: {
             type: Schema.Types.ObjectId,
-            default: () => Schema.Types.ObjectId,
+            default: () => new Types.ObjectId,
         },
         reactionBody: {
             type: String,

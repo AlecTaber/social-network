@@ -40,8 +40,8 @@ const seedDatabase = async () => {
 
     // Add reactions to thoughts
     for (const [index, reaction] of reactions.entries()) {
-      const thoughtId = insertedThoughts[index]._id;
-      await Thought.findByIdAndUpdate(thoughtId, { $push: { reactions: reaction } });
+      const thoughtId = insertedThoughts[index]._id;  // Assume reactions follow the order of thoughts
+      await Thought.findByIdAndUpdate(thoughtId, { $push: { reactions: reaction } });  // reactionId is generated automatically
     }
     console.log('Reactions seeded successfully.');
 
