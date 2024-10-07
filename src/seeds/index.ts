@@ -1,7 +1,7 @@
 import { cleandb } from './cleandb.js';
 import User, { IUser } from '../models/User.js';
 import Thought from '../models/Thought.js';  // No need to import IThought for this operation
-import { users, thoughts } from './data.js';
+import { users, thoughts, reactions, friends } from './data.js';
 import db from '../config/connection.js'; // Import the database connection
 
 const seedDatabase = async () => {
@@ -37,6 +37,21 @@ const seedDatabase = async () => {
       const userId = userMap[thought.username];
       await User.findByIdAndUpdate(userId, { $push: { thoughts: thought._id } });
     }
+
+    // Add reactions to thoughts
+    for (const [index, reaction] of reactions.entries()) {
+      const thoughtId = insertedThoughts[index]._id;
+      await Thought.findByIdAndUpdate(thoughtId, { $push: { reactions: reaction } });
+    }
+    console.log('Reactions seeded successfully.');
+
+    // Add friends to users
+    for (const friendData of friends) {
+      const userId = userMap[friendData.username];
+      const friendIds = friendData.friends.map(friend => userMap[friend]);
+      await User.findByIdAndUpdate(userId, { $push: { friends: { $each: friendIds } } });
+    }
+    console.log('Friends seeded successfully.');
 
     console.log('Seed data linked successfully.');
     process.exit(0);  // Exit the process once seeding is done
