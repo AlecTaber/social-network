@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import  User  from '../models/User.js';
+import Thought from '../models/Thought.js';
 
 
 export const getUsers = async (_: unknown, res: Response) => {
@@ -46,18 +47,19 @@ export const getUsers = async (_: unknown, res: Response) => {
         }
     };
 
-    export const deleteUser = async (req: Request, res: Response) => {
+    export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
         try {
-            const user = await User.findByIdAndDelete(req.params.id);
-            if (!user) {
-                res.status(404).json({ message: 'No user found with this id!' });
-                return;
-            }
-            res.json(user);
+          const user = await User.findById(req.params.userId);
+          if (!user) {
+            return res.status(404).json({ message: 'No user found with this ID!' });
+          }
+          await Thought.deleteMany({ _id: { $in: user.thoughts } });
+          await User.findByIdAndDelete(req.params.userId);
+          return res.json({ message: 'User and associated thoughts deleted!' });
         } catch (err) {
-            res.status(400).json(err);
+          return res.status(500).json(err);
         }
-    };
+      };
 
     export const addFriend = async (req: Request, res: Response) => {
         try {
