@@ -20,7 +20,7 @@ const reactionSchema = new Schema<IReaction>(
     {
         reactionId: {
             type: Schema.Types.ObjectId,
-            default: Schema.Types.ObjectId,
+            default: () => Schema.Types.ObjectId,
         },
         reactionBody: {
             type: String,

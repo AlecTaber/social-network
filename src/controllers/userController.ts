@@ -58,3 +58,30 @@ export const getUsers = async (_: unknown, res: Response) => {
             res.status(400).json(err);
         }
     };
+
+    export const addFriend = async (req: Request, res: Response) => {
+        try {
+            const user = await User.findByIdAndUpdate(req.params.id, { $push: { friends: req.params.friendId } }, { new: true });
+            if (!user) {
+                res.status(404).json({ message: 'No user found with this id!' });
+                return;
+            }
+            res.json(user);
+        } catch (err) {
+            res.status(400).json(err);
+        }
+    };
+
+    export const deleteFriend = async (req: Request, res: Response) => {
+        try {
+            const { userId, friendId } = req.params;
+            const user = await User.findByIdAndUpdate(userId, { $pull: { friends: friendId } }, { new: true });
+            if (!user) {
+                res.status(404).json({ message: 'No user found with this id!' });
+                return;
+            }
+            res.json(user);
+        } catch (err) {
+            res.status(400).json(err);
+        }
+    };

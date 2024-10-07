@@ -58,3 +58,38 @@ export const getThoughts = async (_: unknown, res: Response) => {
             res.status(400).json(err);
         }
     };
+
+    export const addReaction = async (req: Request, res: Response) => {
+        try {
+            const thought = await Thought.findByIdAndUpdate(
+                req.params.thoughtId,
+                { $push: { reactions: req.body } },
+                { new: true, runValidators: true }
+            );
+            if (!thought) {
+                res.status(404).json({ message: 'No thought found with this id!' });
+                return;
+            }
+            res.json(thought);
+        } catch (err) {
+            res.status(400).json(err);
+        }
+    };
+
+    export const deleteReaction = async (req: Request, res: Response) => {
+        try {
+            const { thoughtId, reactionId } = req.params;
+            const thought = await Thought.findByIdAndUpdate(
+                thoughtId,
+                { $pull: { reactions: { reactionId } } },
+                { new: true }
+            );
+            if (!thought) {
+                res.status(404).json({ message: 'No thought found with this id!' });
+                return;
+            }
+            res.json({message: 'Reaction deleted!'});
+        } catch (err) {
+            res.status(400).json(err);
+        }
+    };
