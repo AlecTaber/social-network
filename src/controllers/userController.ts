@@ -47,23 +47,25 @@ export const getUsers = async (_: unknown, res: Response) => {
         }
     };
 
-    export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
+    export const deleteUser = async (req: Request, res: Response) => {
         try {
-          const user = await User.findById(req.params.userId);
-          if (!user) {
-            return res.status(404).json({ message: 'No user found with this ID!' });
-          }
-          await Thought.deleteMany({ _id: { $in: user.thoughts } });
-          await User.findByIdAndDelete(req.params.userId);
-          return res.json({ message: 'User and associated thoughts deleted!' });
+            const user = await User.findByIdAndDelete(req.params.id);
+            if (!user) {
+                res.status(404).json({ message: 'No user found with this id!' });
+                return;
+            }
+            // Delete all thoughts associated with the user
+            await Thought.deleteMany({ username: user.username });
+            res.json(user);
         } catch (err) {
-          return res.status(500).json(err);
+            res.status(400).json(err);
         }
-      };
+    }
 
     export const addFriend = async (req: Request, res: Response) => {
         try {
-            const user = await User.findByIdAndUpdate(req.params.id, { $push: { friends: req.params.friendId } }, { new: true });
+            const { userId, friendId } = req.params;
+            const user = await User.findByIdAndUpdate(userId, { $addToSet: { friends: friendId } }, { new: true });
             if (!user) {
                 res.status(404).json({ message: 'No user found with this id!' });
                 return;
@@ -72,7 +74,7 @@ export const getUsers = async (_: unknown, res: Response) => {
         } catch (err) {
             res.status(400).json(err);
         }
-    };
+    }
 
     export const deleteFriend = async (req: Request, res: Response) => {
         try {
@@ -86,4 +88,4 @@ export const getUsers = async (_: unknown, res: Response) => {
         } catch (err) {
             res.status(400).json(err);
         }
-    };
+    }
